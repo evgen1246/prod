@@ -29,5 +29,4 @@ def get_mask_account(account_number: Union[int, str]) -> str:
 
     mask = f"**{account_number[-4:]}"
 
-
     return mask

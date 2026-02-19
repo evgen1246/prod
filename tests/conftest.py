@@ -1,9 +1,8 @@
 import pytest
 
 
-
 @pytest.fixture()
-def test_data():
+def test_data() -> list:
     return [
         {"id": 1, "state": "EXECUTED", "date": "2018-10-14T00:00:00.000000", "amount": 150},
         {"id": 2, "state": "CANCELED", "date": "2018-10-12T08:00:00.000000", "amount": 200},
@@ -11,8 +10,9 @@ def test_data():
         {"id": 4, "state": "CANCELED", "date": "2018-10-10T08:00:00.000000", "amount": 300},
     ]
 
+
 @pytest.fixture()
-def test_sort_date():
+def test_sort_date() -> list:
     return [
         {"id": 1, "state": "EXECUTED", "date": "2018-10-14T00:00:00.000000", "amount": 150},
         {"id": 2, "state": "CANCELED", "date": "2018-10-12T08:00:00.000000", "amount": 200},
