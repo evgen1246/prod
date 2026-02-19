@@ -8,6 +8,8 @@ from src.masks import get_mask_card_number, get_mask_account
     [
         (1234567899999999, "123456******9999"),
         (1111111111111111, "111111******1111"),
+        (1787897897878978, "178789******8978"),
+        (1100111001100111, "110011******0111"),
     ],
 )
 def test_get_mask_card_number(num_card, expected):

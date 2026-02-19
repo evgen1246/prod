@@ -17,7 +17,9 @@ def mask_account_card(account_and_num: str | int) -> str:
 
 
 def get_date(date_full: str) -> str:
-    """Функция возврщает значение даты по формату "ДД.ММ.ГГГГ" """
+    """
+    Функция возврщает значение даты по формату "ДД.ММ.ГГГГ"
+    """
 
     year = date_full[:4]
     month = date_full[5:7]
