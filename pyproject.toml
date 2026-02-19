@@ -7,6 +7,7 @@ authors = [
 ]
 requires-python = ">=3.13"
 dependencies = [
+    "pytest (>=9.0.2,<10.0.0)"
 ]
 
 
@@ -22,7 +23,8 @@ lint = [
     "isort (>=7.0.0,<8.0.0)"
 ]
 dev = [
-    "pytest (>=9.0.2,<10.0.0)"
+    "pytest (>=9.0.2,<10.0.0)",
+    "pytest-cov (>=7.0.0,<8.0.0)"
 ]
 
 [tool.isort]
