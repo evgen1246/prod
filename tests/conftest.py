@@ -19,3 +19,4 @@ def test_sort_date():
         {"id": 3, "state": "EXECUTED", "date": "2018-10-11T08:00:00.000000", "amount": 250},
         {"id": 4, "state": "CANCELED", "date": "2018-10-10T08:00:00.000000", "amount": 300},
     ]
+
