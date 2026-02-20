@@ -1,6 +1,6 @@
 import pytest
 
-from src.masks import get_mask_card_number, get_mask_account
+from src.masks import get_mask_account, get_mask_card_number
 from src.widget import get_date, mask_account_card
 
 
@@ -28,18 +28,17 @@ def test_get_mask_account_exceptions(account_number):
     with pytest.raises(ValueError):
         get_mask_account(account_number)
 
+
 @pytest.mark.parametrize("num_card, expected", [(11111111111111111111, "**1111"), (11111111111111110123, "**0123")])
 def test_get_mask_account(num_card, expected):
     assert get_mask_account(num_card) == expected
+
 
 def test_get_date():
     assert get_date("2026-10-10T02:26:18.000000") == "10.10.2026"
     assert get_date("2025-02-25T15:45:30.000000") == "25.02.2025"
 
 
-
-
 def test_widget():
-    assert mask_account_card('Visa Platinum 7000792289606361') == 'Visa Platinum 700079******6361'
-    assert mask_account_card('Счет 73654108430135874305') == 'Счет **4305'
-
+    assert mask_account_card("Visa Platinum 7000792289606361") == "Visa Platinum 700079******6361"
+    assert mask_account_card("Счет 73654108430135874305") == "Счет **4305"

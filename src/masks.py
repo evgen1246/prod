@@ -1,4 +1,4 @@
-def get_mask_card_number(num_card: Union[int|str], count_mask: int = 6) -> str:
+def get_mask_card_number(num_card: int | str) -> str:
     """
     Принимает на вход номер карты и возвращает её маску.
     Видны первые 6 цифр и последние 4 цифры.
@@ -14,7 +14,7 @@ def get_mask_card_number(num_card: Union[int|str], count_mask: int = 6) -> str:
     return mask_card
 
 
-def get_mask_account(account_number: Union[int|str]) -> str:
+def get_mask_account(account_number: int | str) -> str:
     """
     Функция принимает на вход номер счета и возвращает его маску.
     Номер счета замаскирован и отображается в формате **XXXX, где X — это цифра номера.
