@@ -55,7 +55,7 @@ def test_filter():
 
 
 @pytest.fixture()
-def description() -> str :
+def description() -> str:
     return [
         "Перевод организации",
         "Перевод со счета на счет",
