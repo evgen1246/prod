@@ -1,5 +1,5 @@
 [project]
-name = "project"
+name = "prod"
 version = "0.1.0"
 description = ""
 authors = [
@@ -53,3 +53,7 @@ disallow_untyped_defs = true
 no_implicit_optional = true
 warn_return_any = true
 exclude = 'venv'
+
+
+[tool.poetry]
+packages = [{ include = "src" }]
