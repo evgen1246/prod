@@ -1,6 +1,5 @@
 import functools
 import logging
-from fileinput import close
 
 
 def log(filename=None):

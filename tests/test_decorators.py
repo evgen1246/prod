@@ -1,11 +1,8 @@
-import os
-import tempfile
 import logging
-
 
 import pytest
+
 from src.decorators import log
-import logging
 
 
 @log()
@@ -37,11 +34,4 @@ def test_function_with_exception(capsys):
     assert "function_with_exception error: ZeroDivisionError. Inputs: (1, 0), {}" in captured.out
 
 
-logging.basicConfig(
-    filename='test_log.txt',
-    level=logging.INFO,
-    format='%(asctime)s - %(message)s'
-)
-
-
-
+logging.basicConfig(filename="test_log.txt", level=logging.INFO, format="%(asctime)s - %(message)s")
