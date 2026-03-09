@@ -1,7 +1,7 @@
 import src.masks
 
 
-def mask_account_card(account_and_num: str | int) -> str:
+def mask_account_card(account_and_num: str) -> str:
     """Функция, которая маскирует номера счетов и карт"""
     account_card_split = account_and_num.split()
 
