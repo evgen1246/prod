@@ -16,9 +16,7 @@ def transaction_convert(transaction: dict) -> float:
 
     if currency == "RUB":
         return float(amount)
-
     elif currency == "EUR" or "USD":
-
         url = f"https://api.apilayer.com/exchangerates_data/convert?to=RUB&from={currency}&amount={amount}"
         headers = {"apikey": os.getenv("TOKEN")}
 

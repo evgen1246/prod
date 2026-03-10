@@ -10,13 +10,12 @@ def load_transactions(file_path: str) -> List[Dict]:
     if not os.path.exists(file_path):
         return []
     try:
-        with open(file_path, "r", encoding="utf-8") as file:
-            data = json.load(file)
-            # являются ли данные списком- если нет, возвращает их.
+        with open(file_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
             if isinstance(data, list):
                 return data
             else:
                 return []
-    # Если не соответствует формату
+
     except json.JSONDecodeError:
         return []
