@@ -12,6 +12,7 @@ def test_transaction_convert(mock_get):
     transaction = {"amount": 100, "currency": "USD"}  # Тестовая транзакция
     assert transaction_convert(transaction) == 7500.0
 
+
 # тесты utils.py
 @patch("os.path.exists", return_value=True)
 def test_load_transactions(mock_open_one):
