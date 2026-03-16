@@ -22,7 +22,7 @@ def transaction_convert(transaction: dict) -> float:
 
         response = requests.get(url, headers=headers)
 
-        if response.status_code == 200:
-            return float(response.json()["result"])
-        else:
-            return float(amount)
+    if response.status_code == 200:
+        return float(response.json()["result"])
+    else:
+        return float(amount)
