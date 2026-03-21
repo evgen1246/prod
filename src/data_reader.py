@@ -1,4 +1,5 @@
 import re
+from collections import Counter
 from pathlib import Path
 
 import pandas as pd
@@ -38,7 +39,18 @@ def process_bank_search(transactions: list[dict], search: str) -> list[dict]:
     transaction_filter = [
         transaction for transaction in transactions if pattern.search(transaction.get("description", ""))
     ]
+
     return transaction_filter
+
+
+def count_transactions_by_category(transactions: list[dict], categories: list[str]) -> dict:
+    """Функция подсчёта операций по категориям"""
+    category_list = [
+        transaction.get("description") for transaction in transactions if transaction.get("description") in categories
+    ]
+
+    category_count = Counter(category_list)
+    return dict(category_count)
 
 
 def process_bank_operations(transactions: list[dict], categories: list) -> dict:

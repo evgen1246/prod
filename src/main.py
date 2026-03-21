@@ -1,6 +1,9 @@
 import os
 
-from src.data_reader import process_bank_search
+from src.data_reader import process_bank_search, read_transactions_from_csv, read_transactions_from_excel
+from src.generators import filter_by_currency
+from src.masks import get_mask_account
+from src.processing import filter_by_state, sort_by_date
 from src.utils import load_transactions
 
 PATH_TO_FILE = os.path.join(os.path.dirname(__file__), "data")
@@ -20,15 +23,14 @@ def main():
         print("Программа: Для обработки выбран JSON-файл.")
     elif choice == "2":
         file_path = os.path.join(PATH_TO_FILE, "transactions.csv")
-        transactions = load_transactions(file_path)
+        transactions = read_transactions_from_csv(file_path)
         print("Программа: Для обработки выбран CSV-файл.")
     elif choice == "3":
         file_path = os.path.join(PATH_TO_FILE, "transactions_excel.xlsx")
-        transactions = load_transactions(file_path)
+        transactions = read_transactions_from_excel(file_path)
         print("Программа: Для обработки выбран XLSX-файл.")
     else:
         print("Неверный выбор.")
-
 
     statuses = ["EXECUTED", "CANCELED", "PENDING"]
 
@@ -43,7 +45,7 @@ def main():
         )
         if stat_in in statuses:
             print(f'Программа: Операции отфильтрованы по статусу "{stat_in}"')
-            filtered_transactions = [t for t in transactions if str(t.get("state", "")).upper() == stat_in]
+            filtered_transactions = filter_by_state(transactions, stat_in)
             break
         else:
             print(f'Программа: Статус операции "{stat_in}" недоступен.')
@@ -53,19 +55,17 @@ def main():
     if sort_choice == "да":
         next_choice = input("Сортировать по возрастанию или по убыванию?\nПользователь: ").strip().lower()
         if next_choice == "по возрастанию":
-            filtered_transactions.sort(key=lambda x: x["date"])
+            sort_by_date(filtered_transactions, reverse=False)
         elif next_choice == "по убыванию":
-            filtered_transactions.sort(key=lambda x: x["date"], reverse=True)
+            sort_by_date(filtered_transactions)
 
     currency_choice = input("Выводить только рублевые транзакции? Да/Нет\nПользователь: ").strip().lower()
     if currency_choice == "да":
-        filtered_transactions = [
-            t
-            for t in filtered_transactions
-            if "operationAmount" in t and t["operationAmount"]["currency"]["code"] == "RUB"
-        ]
+        filter_by_currency(filtered_transactions, "RUB")
         description_filter = (
-            input("Программа: Отфильтровать список транзакций по определенному слову в описании? Да/Нет")
+            input(
+                "Программа: Отфильтровать список транзакций по определенному слову в описании? Да/Нет\nПользователь:"
+            )
             .strip()
             .lower()
         )
@@ -75,11 +75,11 @@ def main():
         print("Распечатываю итоговый список транзакций...")
 
         if filtered_transactions:
-            print(f"Программа: Всего банковских операций в выборке: {len(filtered_transactions)}]")
+            print(f"Программа: Всего банковских операций в выборке: {len(filtered_transactions)}")
             for transaction in filtered_transactions:
                 date = transaction.get("date", "")
                 description = transaction.get("description", "")
-                account = transaction.get("account", "")[-4:]  # последние 4 цифры счёта
+                account = get_mask_account(transaction["account"])
                 amount = transaction.get("operationAmount", {}).get("amount", "")
                 currency = transaction.get("operationAmount", {}).get("currency", {}).get("code", "")
 
@@ -88,6 +88,7 @@ def main():
                 print(f"Сумма: {amount} {currency} \n")
         else:
             print("Программа: Не найдено ни одной транзакции, подходящей под ваши условия фильтрации")
+
 
 if __name__ == "__main__":
     main()
