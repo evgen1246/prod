@@ -1,12 +1,15 @@
 import os
 
+from pathlib import Path
+
 from src.data_reader import process_bank_search, read_transactions_from_csv, read_transactions_from_excel
 from src.generators import filter_by_currency
-from src.masks import get_mask_account
+from src.masks import get_mask_account, get_mask_card_number
 from src.processing import filter_by_state, sort_by_date
 from src.utils import load_transactions
 
-PATH_TO_FILE = os.path.join(os.path.dirname(__file__), "data")
+PATH_TO_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
+
 
 
 def main():
@@ -19,20 +22,24 @@ def main():
     choice = input("Пользователь: ")
     if choice == "1":
         file_path = os.path.join(PATH_TO_FILE, "operations.json")
+        file_path = Path(file_path)
         transactions = load_transactions(file_path)
         print("Программа: Для обработки выбран JSON-файл.")
     elif choice == "2":
         file_path = os.path.join(PATH_TO_FILE, "transactions.csv")
+        file_path = Path(file_path)
         transactions = read_transactions_from_csv(file_path)
         print("Программа: Для обработки выбран CSV-файл.")
     elif choice == "3":
         file_path = os.path.join(PATH_TO_FILE, "transactions_excel.xlsx")
+        file_path = Path(file_path)
         transactions = read_transactions_from_excel(file_path)
         print("Программа: Для обработки выбран XLSX-файл.")
     else:
         print("Неверный выбор.")
 
     statuses = ["EXECUTED", "CANCELED", "PENDING"]
+
 
     while True:
         stat_in = (
@@ -72,22 +79,22 @@ def main():
         if description_filter == "да":
             search_str = input("Введите строку для поиска: ")
             filtered_transactions = process_bank_search(filtered_transactions, search_str)
-        print("Распечатываю итоговый список транзакций...")
+            print("Распечатываю итоговый список транзакций...")
 
-        if filtered_transactions:
-            print(f"Программа: Всего банковских операций в выборке: {len(filtered_transactions)}")
-            for transaction in filtered_transactions:
-                date = transaction.get("date", "")
-                description = transaction.get("description", "")
-                account = get_mask_account(transaction["account"])
-                amount = transaction.get("operationAmount", {}).get("amount", "")
-                currency = transaction.get("operationAmount", {}).get("currency", {}).get("code", "")
+    if filtered_transactions:
+        print(f"Программа: Всего банковских операций в выборке: {len(filtered_transactions)}")
+        for transaction in filtered_transactions:
+            date = transaction.get("date", "")
+            description = transaction.get("description", "")
+            account = get_mask_card_number(transaction.get("account", ""))
+            amount = transaction.get("operationAmount", {}).get("amount", "")
+            currency = transaction.get("operationAmount", {}).get("currency", {}).get("code", "")
 
-                print(f"{date} {description}")
-                print(f"Счет **{account}")
-                print(f"Сумма: {amount} {currency} \n")
-        else:
-            print("Программа: Не найдено ни одной транзакции, подходящей под ваши условия фильтрации")
+            print(f"{date} {description}")
+            print(f"Счет **{account}")
+            print(f"Сумма: {amount} {currency} \n")
+    else:
+        print("Программа: Не найдено ни одной транзакции, подходящей под ваши условия фильтрации")
 
 
 if __name__ == "__main__":

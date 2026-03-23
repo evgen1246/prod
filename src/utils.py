@@ -2,6 +2,7 @@ import json
 import logging
 import os
 from typing import Dict, List
+from pathlib import Path
 
 logger = logging.getLogger("utils")
 logger.setLevel(logging.INFO)
@@ -12,10 +13,11 @@ file_handler.setFormatter(file_formatter)
 logger.addHandler(file_handler)
 
 
-def load_transactions(file_path: str) -> List[Dict]:
+def load_transactions(file_path: Path) -> List[Dict]:
     """
     Принимает на вход путь до JSON-файла и возвращает список словарей с данными о финансовых транзакциях
     """
+    file_path = Path(file_path)
     if not os.path.exists(file_path):
         logger.error(f"Файл не найден: {file_path}")
         return []
