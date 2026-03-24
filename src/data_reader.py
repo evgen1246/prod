@@ -7,13 +7,22 @@ import pandas as pd
 
 def read_transactions_from_csv(path_file: Path) -> list:
     """Принимает путь к файлу CSV и выдает список словарей с транзакциями."""
-
     path_file = Path(path_file)
 
     if not path_file.exists():
         raise FileNotFoundError(f"Файл не найден: {path_file}")
 
-    df = pd.read_csv(path_file)
+    try:
+        df = pd.read_csv(path_file, sep=';')
+    except Exception as e:
+        print(f"Ошибка при чтении CSV файла {path_file}: {e}")
+        return []
+
+    # Проверка, что df не пустой после чтения
+    if df.empty:
+        print(f"Предупреждение: CSV файл {path_file} пуст или не содержит данных.")
+        return []
+
     operation = df.to_dict(orient="records")
     return operation
 
@@ -62,7 +71,7 @@ def process_bank_operations(transactions: list[dict], categories: list) -> dict:
 
     category_count = {category: 0 for category in categories}
     for transaction in transactions:
-        description = transaction.get("descriptions", "").lower()
+        description = transaction.get("description", "").lower()
         for category in categories:
             if category.lower() in description:
                 category_count[category] += 1

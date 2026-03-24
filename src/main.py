@@ -1,5 +1,4 @@
 import os
-
 from pathlib import Path
 
 from src.data_reader import process_bank_search, read_transactions_from_csv, read_transactions_from_excel
@@ -7,6 +6,7 @@ from src.generators import filter_by_currency
 from src.masks import get_mask_account, get_mask_card_number
 from src.processing import filter_by_state, sort_by_date
 from src.utils import load_transactions
+from src.widget import get_date
 
 PATH_TO_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
 
@@ -84,15 +84,56 @@ def main():
     if filtered_transactions:
         print(f"Программа: Всего банковских операций в выборке: {len(filtered_transactions)}")
         for transaction in filtered_transactions:
-            date = transaction.get("date", "")
+            # Извлекаем данные
+            date_full = transaction.get("date", "")
             description = transaction.get("description", "")
-            account = get_mask_card_number(transaction.get("account", ""))
-            amount = transaction.get("operationAmount", {}).get("amount", "")
-            currency = transaction.get("operationAmount", {}).get("currency", {}).get("code", "")
+            from_info = transaction.get("from", "")
+            to_info = transaction.get("to", "")
+            amount = transaction.get("operationAmount", {}).get("amount", "0.00")
+            currency = transaction.get("operationAmount", {}).get("currency", {}).get("code", "USD")
 
-            print(f"{date} {description}")
-            print(f"Счет **{account}")
-            print(f"Сумма: {amount} {currency} \n")
+            # Форматируем дату
+            formatted_date = get_date(date_full)
+
+
+            masked_from = "Без отправителя"
+            masked_to = "Без получателя"
+
+            from_parts = from_info.split()
+            if from_parts:
+                from_type_indicator = from_parts[0].lower()
+                from_number = from_parts[-1]  # Последний элемент
+
+                if from_type_indicator in ['maestro', 'mastercard', 'visa', 'mir']:
+                    masked_from = get_mask_card_number(from_number)
+                elif from_type_indicator == 'счет':
+                    masked_from = get_mask_account(from_number)
+                else:
+                    masked_from = get_mask_card_number(from_number)  # Предполагаем, что это карта, если не счет
+
+            to_parts = to_info.split()
+            if to_parts:
+                to_type_indicator = to_parts[0].lower()
+                to_number = to_parts[-1]
+
+                if to_type_indicator == 'счет':
+                    masked_to = get_mask_account(to_number)
+                elif to_type_indicator in ['maestro', 'mastercard', 'visa', 'mir']:
+                    masked_to = get_mask_card_number(to_number)
+                else:
+                    masked_to = get_mask_card_number(to_number)
+
+
+            # Первая строка: Дата и описание
+            print(f"{formatted_date} {description}")
+
+            # Вторая строка: Отправитель -> Получатель
+            print(f"{masked_from} -> {masked_to}")
+
+            # Третья строка: Сумма и валюта
+            print(f"Сумма: {amount} {currency}")
+            print("-" * 20)  # Разделитель между операциями для наглядности
+
     else:
         print("Программа: Не найдено ни одной транзакции, подходящей под ваши условия фильтрации")
 
