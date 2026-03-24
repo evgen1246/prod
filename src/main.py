@@ -81,10 +81,11 @@ def main():
             search_str = input("Введите строку для поиска: ")
             filtered_transactions = process_bank_search(filtered_transactions, search_str)
             print("Распечатываю итоговый список транзакций...")
+    final_ = filtered_transactions
 
-    if filtered_transactions:
-        print(f"Программа: Всего банковских операций в выборке: {len(filtered_transactions)}")
-        for transaction in filtered_transactions:
+    if final_:
+        print(f"Программа: Всего банковских операций в выборке: {len(final_)}")
+        for transaction in final_:
             # Извлекаем данные
             date_full = transaction.get("date", "")
             description = transaction.get("description", "")
