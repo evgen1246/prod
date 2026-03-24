@@ -20,6 +20,7 @@ def main():
     print("3. Получить информацию о транзакциях из XLSX-файла.")
 
     choice = input("Пользователь: ")
+    transactions = []
     if choice == "1":
         file_path = os.path.join(PATH_TO_FILE, "operations.json")
         file_path = Path(file_path)
@@ -62,13 +63,13 @@ def main():
     if sort_choice == "да":
         next_choice = input("Сортировать по возрастанию или по убыванию?\nПользователь: ").strip().lower()
         if next_choice == "по возрастанию":
-            sort_by_date(filtered_transactions, reverse=False)
+            filtered_transactions = sort_by_date(filtered_transactions, reverse=False)
         elif next_choice == "по убыванию":
-            sort_by_date(filtered_transactions)
+            filtered_transactions = sort_by_date(filtered_transactions)
 
     currency_choice = input("Выводить только рублевые транзакции? Да/Нет\nПользователь: ").strip().lower()
     if currency_choice == "да":
-        filter_by_currency(filtered_transactions, "RUB")
+        filtered_transactions = list(filter_by_currency(filtered_transactions, "RUB"))
         description_filter = (
             input(
                 "Программа: Отфильтровать список транзакций по определенному слову в описании? Да/Нет\nПользователь:"
