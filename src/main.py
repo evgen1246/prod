@@ -1,3 +1,4 @@
+import logging
 import os
 from pathlib import Path
 
@@ -8,6 +9,7 @@ from src.processing import filter_by_state, sort_by_date
 from src.utils import load_transactions
 from src.widget import get_date
 
+# logging.disable(logging.CRITICAL)
 PATH_TO_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
 
 
@@ -29,11 +31,22 @@ def main():
         file_path = os.path.join(PATH_TO_FILE, "transactions.csv")
         file_path = Path(file_path)
         transactions = read_transactions_from_csv(file_path)
+        for trans in transactions:
+            # Добавляем структуру operationAmount
+            trans["operationAmount"] = {
+                "amount": str(trans.get("amount", "0")).replace(",", "."),
+                "currency": {"name": trans.get("currency_name", ""), "code": trans.get("currency_code", "")},
+            }
         print("Программа: Для обработки выбран CSV-файл.")
     elif choice == "3":
         file_path = os.path.join(PATH_TO_FILE, "transactions_excel.xlsx")
         file_path = Path(file_path)
         transactions = read_transactions_from_excel(file_path)
+        for trans in transactions:
+            trans["operationAmount"] = {
+                "amount": str(trans.get("amount", "0")).replace(",", "."),
+                "currency": {"name": trans.get("currency_name", ""), "code": trans.get("currency_code", "")},
+            }
         print("Программа: Для обработки выбран XLSX-файл.")
     else:
         print("Неверный выбор.")
@@ -64,7 +77,7 @@ def main():
             filtered_transactions = sort_by_date(filtered_transactions, reverse=False)
         elif next_choice == "по убыванию":
             filtered_transactions = sort_by_date(filtered_transactions)
-    print(filtered_transactions)
+
     currency_choice = input("Выводить только рублевые транзакции? Да/Нет\nПользователь: ").strip().lower()
 
     if currency_choice == "да":
@@ -93,7 +106,7 @@ def main():
             description = transaction.get("description", "")
             from_info = transaction.get("from", "")
             to_info = transaction.get("to", "")
-            amount = transaction.get("operationAmount", {}).get("amount", "0.00")
+            amount = transaction.get("operationAmount", {}).get("amount", "")
             currency = transaction.get("operationAmount", {}).get("currency", {}).get("code", "USD")
 
             # Форматируем дату
@@ -137,7 +150,7 @@ def main():
 
             # Третья строка: Сумма и валюта
             print(f"Сумма: {amount} {currency}")
-            print("-" * 20)  # Разделитель между операциями для наглядности
+            print("-" * 20)
 
     else:
         print("Программа: Не найдено ни одной транзакции, подходящей под ваши условия фильтрации")
