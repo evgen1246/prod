@@ -1,4 +1,3 @@
-import logging
 import os
 from pathlib import Path
 
@@ -9,7 +8,6 @@ from src.processing import filter_by_state, sort_by_date
 from src.utils import load_transactions
 from src.widget import get_date
 
-# logging.disable(logging.CRITICAL)
 PATH_TO_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
 
 
