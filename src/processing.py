@@ -3,15 +3,15 @@ def filter_by_state(data: list, state: str = "EXECUTED") -> list:
     Функция возвращает новый список словарей, содержащий только те словари,
     у которых ключ state.
     """
+    filtered_data = [
+        item
+        for item in data
+        if isinstance(item, dict)
+        and isinstance(item.get("state"), str)
+        and item.get("state").lower() == state.lower() == state.lower()
+    ]
 
-    def filter_by_state(data: list, state: str = "EXECUTED") -> list:
-        """
-        Функция возвращает новый список словарей, содержащий только те словари,
-        у которых ключ state соответствует заданному.
-        """
-        filtered_data = [item for item in data if isinstance(item, dict) and item.get("state", "").lower() == state.lower()]
-
-        return filtered_data
+    return filtered_data
 
 
 def sort_by_date(data: list, reverse: bool = True) -> list:

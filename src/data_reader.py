@@ -13,7 +13,7 @@ def read_transactions_from_csv(path_file: Path) -> list:
         raise FileNotFoundError(f"Файл не найден: {path_file}")
 
     try:
-        df = pd.read_csv(path_file, sep=';')
+        df = pd.read_csv(path_file, sep=";")
     except Exception as e:
         print(f"Ошибка при чтении CSV файла {path_file}: {e}")
         return []

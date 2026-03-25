@@ -11,7 +11,6 @@ from src.widget import get_date
 PATH_TO_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
 
 
-
 def main():
     print("Привет! Добро пожаловать в программу работы с банковскими транзакциями.")
     print("Выберите необходимый пункт меню: ")
@@ -41,7 +40,6 @@ def main():
 
     statuses = ["EXECUTED", "CANCELED", "PENDING"]
 
-
     while True:
         stat_in = (
             input(
@@ -66,21 +64,25 @@ def main():
             filtered_transactions = sort_by_date(filtered_transactions, reverse=False)
         elif next_choice == "по убыванию":
             filtered_transactions = sort_by_date(filtered_transactions)
-
+    print(filtered_transactions)
     currency_choice = input("Выводить только рублевые транзакции? Да/Нет\nПользователь: ").strip().lower()
+
     if currency_choice == "да":
+
         filtered_transactions = list(filter_by_currency(filtered_transactions, "RUB"))
-        description_filter = (
-            input(
-                "Программа: Отфильтровать список транзакций по определенному слову в описании? Да/Нет\nПользователь:"
-            )
-            .strip()
-            .lower()
-        )
-        if description_filter == "да":
-            search_str = input("Введите строку для поиска: ")
-            filtered_transactions = process_bank_search(filtered_transactions, search_str)
-            print("Распечатываю итоговый список транзакций...")
+
+    description_filter = (
+        input("Программа: Отфильтровать список транзакций по определенному слову в описании? Да/Нет\nПользователь:")
+        .strip()
+        .lower()
+    )
+
+    if description_filter == "да":
+        search_str = input("Введите строку для поиска: ")
+        filtered_transactions = process_bank_search(filtered_transactions, search_str)
+
+    print("Распечатываю итоговый список транзакций...")
+
     final_ = filtered_transactions
 
     if final_:
@@ -97,18 +99,20 @@ def main():
             # Форматируем дату
             formatted_date = get_date(date_full)
 
-
             masked_from = "Без отправителя"
             masked_to = "Без получателя"
 
-            from_parts = from_info.split()
+            if isinstance(from_info, str):
+                from_parts = from_info.split()
+            else:
+                from_parts = []
             if from_parts:
                 from_type_indicator = from_parts[0].lower()
                 from_number = from_parts[-1]  # Последний элемент
 
-                if from_type_indicator in ['maestro', 'mastercard', 'visa', 'mir']:
+                if from_type_indicator in ["maestro", "mastercard", "visa", "mir"]:
                     masked_from = get_mask_card_number(from_number)
-                elif from_type_indicator == 'счет':
+                elif from_type_indicator == "счет":
                     masked_from = get_mask_account(from_number)
                 else:
                     masked_from = get_mask_card_number(from_number)  # Предполагаем, что это карта, если не счет
@@ -118,13 +122,12 @@ def main():
                 to_type_indicator = to_parts[0].lower()
                 to_number = to_parts[-1]
 
-                if to_type_indicator == 'счет':
+                if to_type_indicator == "счет":
                     masked_to = get_mask_account(to_number)
-                elif to_type_indicator in ['maestro', 'mastercard', 'visa', 'mir']:
+                elif to_type_indicator in ["maestro", "mastercard", "visa", "mir"]:
                     masked_to = get_mask_card_number(to_number)
                 else:
                     masked_to = get_mask_card_number(to_number)
-
 
             # Первая строка: Дата и описание
             print(f"{formatted_date} {description}")
